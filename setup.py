@@ -18,10 +18,21 @@ else:
     # Linux
     libraries = ['usb', 'ftdi1', 'pinproc']
 
+if 'CROSS_BUILD' in os.environ and 'CROSS_INC_PATH' in os.environ and 'CROSS_LIB_PATH' in os.environ:
+    include_dirs = [
+        os.environ['CROSS_INC_PATH'],
+        os.environ['CROSS_INC_PATH'] + '/p-roc',
+        os.environ['CROSS_INC_PATH'] + '/usr/include'
+    ]
+    library_dirs = [os.environ['CROSS_LIB_PATH'] + '/usr/lib']
+else:
+    include_dirs = ['../libpinproc/include']
+    library_dirs = ['/usr/local/lib', '../libpinproc/bin']
+
 module1 = Extension("pinproc",
-                    include_dirs=['../libpinproc/include'],
+                    include_dirs=include_dirs,
                     libraries=libraries,
-                    library_dirs=['/usr/local/lib', '../libpinproc/bin'],
+                    library_dirs=library_dirs,
                     extra_compile_args=extra_compile_args,
                     extra_link_args=extra_link_args,
                     sources=['pypinproc.cpp', 'dmdutil.cpp', 'dmd.c'])
